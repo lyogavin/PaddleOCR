@@ -168,6 +168,7 @@ def main(args):
     _st = time.time()
     count = 0
     shuffle(image_file_list)
+    print(f"top 10 files: {image_file_list[:10]}")
     for idx, image_file in enumerate(tqdm.tqdm(image_file_list, total=len(image_file_list))):
         datadog_sender.send_datadog_event("img_file_processed", [])
 
