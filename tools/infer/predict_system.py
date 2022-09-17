@@ -38,7 +38,7 @@ from ppocr.utils.logging import get_logger
 
 ts=int(time.time())
 print(f"logging to {ts}_log.log")
-logger = get_logger(log_file=f"{ts}_log.log")
+logger = get_logger(log_file=f"logs/{ts}_log.log")
 
 
 import tools.infer.utility as utility
@@ -175,12 +175,12 @@ def main(args):
     shuffle(image_file_list)
     print(f"top 10 files: {image_file_list[:10]}")
     for idx, image_file in enumerate(tqdm.tqdm(image_file_list, total=len(image_file_list))):
-        datadog_sender.send_datadog_event("img_file_processed", [])
+        datadog_sender.send_datadog_event("img_file_processed", [], f"pid:{os.getpid()}")
 
         # check existing....
 
         if os.path.exists(os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt")):
-            datadog_sender.send_datadog_event("img_file_results_existing", [])
+            datadog_sender.send_datadog_event("img_file_results_existing", [], f"pid:{os.getpid()}")
             logger.debug(f"{image_file} exists, skipping")
             continue
 
@@ -216,7 +216,7 @@ def main(args):
                 f.writelines(save_pred)
             logger.debug("The ocr results saved in {}".format(
                 os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt")))
-            datadog_sender.send_datadog_event("ocr_result_saved", [], f"number of dt_boxes: {len(dt_boxes)}")
+            datadog_sender.send_datadog_event("ocr_result_saved", [f"number of dt_boxes: {len(dt_boxes)}"], f"pid:{os.getpid()}")
         else:
             save_results.append(save_pred)
 
