@@ -193,12 +193,12 @@ def main(args):
 
         if save_results_per_file:
             with open(
-                os.path.join(draw_img_save_dir, os.path.basename(image_file), "_system_results.txt"),
+                os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt"),
                 'w',
                 encoding='utf-8') as f:
                 f.writelines(save_pred)
             logger.debug("The ocr results saved in {}".format(
-                os.path.join(draw_img_save_dir, os.path.basename(image_file), "_system_results.txt")))
+                os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt")))
             datadog_sender.send_datadog_event("ocr_result_saved", [], f"number of dt_boxes: {len(dt_boxes)}")
         else:
             save_results.append(save_pred)
