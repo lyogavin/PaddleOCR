@@ -50,13 +50,14 @@ def get_logger(name='ppocr', log_file=None, log_level=logging.DEBUG):
             return logger
 
     formatter = logging.Formatter(
-        '[%(asctime)s] %(name)s %(levelname)s: %(message)s',
+        #'[%(asctime)s] %(name)s %(levelname)s: %(message)s',
+        "PID%(process)d: TID%(thread)d %(asctime)s [%(levelname)s] %(message)s",
         datefmt="%Y/%m/%d %H:%M:%S")
 
     stream_handler = logging.StreamHandler(stream=sys.stdout)
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
-    if log_file is not None and dist.get_rank() == 0:
+    if log_file is not None:# and dist.get_rank() == 0:
         log_file_folder = os.path.split(log_file)[0]
         os.makedirs(log_file_folder, exist_ok=True)
         file_handler = logging.FileHandler(log_file, 'a')
