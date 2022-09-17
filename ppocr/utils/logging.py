@@ -65,7 +65,7 @@ def get_logger(name='ppocr', log_file=None, log_level=logging.DEBUG):
     if dist.get_rank() == 0:
         logger.setLevel(log_level)
     else:
-        logger.setLevel(logging.ERROR)
+        logger.setLevel(logging.INFO)
     logger_initialized[name] = True
     logger.propagate = False
     return logger
