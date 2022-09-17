@@ -16,6 +16,8 @@ import sys
 import subprocess
 import tqdm
 import glob
+from random import shuffle
+
 
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
@@ -165,6 +167,7 @@ def main(args):
     cpu_mem, gpu_mem, gpu_util = 0, 0, 0
     _st = time.time()
     count = 0
+    shuffle(image_file_list)
     for idx, image_file in enumerate(tqdm.tqdm(image_file_list, total=len(image_file_list))):
         datadog_sender.send_datadog_event("img_file_processed", [])
 
@@ -172,7 +175,7 @@ def main(args):
 
         if os.path.exists(os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt")):
             datadog_sender.send_datadog_event("img_file_results_existing", [])
-            logger.debug(f"image_file exists, skipping")
+            logger.debug(f"{image_file} exists, skipping")
             continue
 
         img, flag, _ = check_and_read(image_file)
