@@ -33,18 +33,23 @@ import json
 import time
 import logging
 from PIL import Image
+
+from ppocr.utils.logging import get_logger
+
+ts=int(time.time())
+print(f"logging to {ts}_log.log")
+logger = get_logger(log_file=f"{ts}_log.log")
+
+
 import tools.infer.utility as utility
 import tools.infer.predict_rec as predict_rec
 import tools.infer.predict_det as predict_det
 import tools.infer.predict_cls as predict_cls
 from ppocr.utils.utility import get_image_file_list, check_and_read
-from ppocr.utils.logging import get_logger
+
 from tools.infer.utility import draw_ocr_box_txt, get_rotate_crop_image
 import datadog_sender
 
-ts=int(time.time())
-print(f"logging to {ts}_log.log")
-logger = get_logger(log_file=f"{ts}_log.log")
 
 
 class TextSystem(object):
