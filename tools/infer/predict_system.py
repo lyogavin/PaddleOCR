@@ -35,7 +35,11 @@ import tools.infer.predict_cls as predict_cls
 from ppocr.utils.utility import get_image_file_list, check_and_read
 from ppocr.utils.logging import get_logger
 from tools.infer.utility import draw_ocr_box_txt, get_rotate_crop_image
-logger = get_logger()
+import datadog_sender
+
+ts=int(time.time())
+print(f"logging to {ts}_log.log")
+logger = get_logger(log_file=f"{ts}_log.log")
 
 
 class TextSystem(object):
@@ -135,7 +139,8 @@ def main(args):
     image_file_list = get_image_file_list(args.image_dir)
     image_file_list = image_file_list[args.process_id::args.total_process_num]
     text_sys = TextSystem(args)
-    is_visualize = True
+    is_visualize = False
+    save_results_per_file = True
     font_path = args.vis_font_path
     drop_score = args.drop_score
     draw_img_save_dir = args.draw_img_save_dir
@@ -158,6 +163,7 @@ def main(args):
     _st = time.time()
     count = 0
     for idx, image_file in enumerate(image_file_list):
+        datadog_sender.send_datadog_event("img_file_processed", [])
 
         img, flag, _ = check_and_read(image_file)
         if not flag:
@@ -177,11 +183,23 @@ def main(args):
 
         res = [{
             "transcription": rec_res[idx][0],
+            "score": rec_res[idx][1],
             "points": np.array(dt_boxes[idx]).astype(np.int32).tolist(),
         } for idx in range(len(dt_boxes))]
         save_pred = os.path.basename(image_file) + "\t" + json.dumps(
             res, ensure_ascii=False) + "\n"
-        save_results.append(save_pred)
+
+        if save_results_per_file:
+            with open(
+                os.path.join(draw_img_save_dir, os.path.basename(image_file), "_system_results.txt"),
+                'w',
+                encoding='utf-8') as f:
+                f.writelines(save_pred)
+            logger.debug("The ocr results saved in {}".format(
+                os.path.join(draw_img_save_dir, os.path.basename(image_file), "_system_results.txt")))
+            datadog_sender.send_datadog_event("ocr_result_saved", [], f"number of dt_boxes: {len(dt_boxes)}")
+        else:
+            save_results.append(save_pred)
 
         if is_visualize:
             image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -209,11 +227,12 @@ def main(args):
         text_sys.text_detector.autolog.report()
         text_sys.text_recognizer.autolog.report()
 
-    with open(
-            os.path.join(draw_img_save_dir, "system_results.txt"),
-            'w',
-            encoding='utf-8') as f:
-        f.writelines(save_results)
+    if not save_results_per_file:
+        with open(
+                os.path.join(draw_img_save_dir, "system_results.txt"),
+                'w',
+                encoding='utf-8') as f:
+            f.writelines(save_results)
 
 
 if __name__ == "__main__":
