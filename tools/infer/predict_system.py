@@ -14,6 +14,8 @@
 import os
 import sys
 import subprocess
+import tqdm
+
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
@@ -162,7 +164,7 @@ def main(args):
     cpu_mem, gpu_mem, gpu_util = 0, 0, 0
     _st = time.time()
     count = 0
-    for idx, image_file in enumerate(image_file_list):
+    for idx, image_file in enumerate(tqdm.tqdm(image_file_list, total=len(image_file_list))):
         datadog_sender.send_datadog_event("img_file_processed", [])
 
         img, flag, _ = check_and_read(image_file)
