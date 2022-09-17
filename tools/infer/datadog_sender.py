@@ -15,8 +15,7 @@ from datadog_api_client.v1.model.series import Series
 import sys
 
 import os, logging
-sys.path.append('../utils')
-import logging_utils
+
 logger = logging.getLogger(__name__)
 
 import socket
