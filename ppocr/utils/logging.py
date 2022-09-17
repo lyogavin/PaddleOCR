@@ -27,6 +27,21 @@ logger_initialized = {}
 
 @functools.lru_cache()
 def get_logger(name='ppocr', log_file=None, log_level=logging.DEBUG):
+    handlers = [
+        logging.FileHandler(log_file),
+        logging.StreamHandler(sys.stdout)
+    ]
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="PID%(process)d: TID%(thread)d %(asctime)s [%(levelname)s] %(message)s",
+        handlers=handlers
+    )
+    logger = logging.getLogger(name)
+    return logger
+
+
+def oriingl(name='ppocr', log_file=None, log_level=logging.DEBUG):
     """Initialize and get a logger by name.
     If the logger has not been initialized, this method will initialize the
     logger by adding one or two handlers, otherwise the initialized logger will
