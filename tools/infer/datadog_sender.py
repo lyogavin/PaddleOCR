@@ -16,7 +16,7 @@ import sys
 
 import os, logging
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 import socket
 hostname = socket.gethostname()
@@ -46,11 +46,11 @@ with ApiClient(configuration) as api_client:
             api_instance = EventsApi(api_client)
             response = api_instance.create_event(body=body)
 
-            logger.debug(f"datadog api response: {response}")
+            #logger.debug(f"datadog api response: {response}")
 
             return response
         except Exception as err:
-            logger.warning(f"datadog err: {err}")
+            print(f"datadog err: {err}")
 
 
     #https://github.com/DataDog/datadog-api-client-python/blob/master/examples/v1/metrics/SubmitMetrics.py
@@ -82,11 +82,11 @@ with ApiClient(configuration) as api_client:
             api_instance = MetricsApi(api_client)
             response = api_instance.submit_metrics(body=body)
 
-            logger.debug(f"datadog api response: {response}")
+            #logger.debug(f"datadog api response: {response}")
 
             return response
         except Exception as err:
-            logger.warning(f"datadog err: {err}")
+            print(f"datadog err: {err}")
 
 if __name__ == '__main__':
     import random

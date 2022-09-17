@@ -15,6 +15,7 @@ import os
 import sys
 import subprocess
 import tqdm
+import glob
 
 
 __dir__ = os.path.dirname(os.path.abspath(__file__))
@@ -166,6 +167,13 @@ def main(args):
     count = 0
     for idx, image_file in enumerate(tqdm.tqdm(image_file_list, total=len(image_file_list))):
         datadog_sender.send_datadog_event("img_file_processed", [])
+
+        # check existing....
+
+        if os.path.exists(os.path.join(draw_img_save_dir, f"{os.path.basename(image_file)}_system_results.txt")):
+            datadog_sender.send_datadog_event("img_file_results_existing", [])
+            logger.debug(f"image_file exists, skipping")
+            continue
 
         img, flag, _ = check_and_read(image_file)
         if not flag:
