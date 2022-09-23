@@ -146,8 +146,28 @@ def sorted_boxes(dt_boxes):
 
 
 def main(args):
-    image_file_list = get_image_file_list(args.image_dir)
+    image_file_list = []
+    for dir_entry in args.image_dir.split(","):
+        image_file_list_entry = get_image_file_list(dir_entry)
+        image_file_list.extend(image_file_list_entry)
+    file_name_set = set()
+
+    print(f"files found in {args.image_dir}: len: {len(image_file_list)}")
+    deduped_image_file_list = []
+
+    for f in image_file_list:
+        file_name = os.path.basename(f)
+        if file_name not in file_name_set:
+            file_name_set.add(file_name)
+            deduped_image_file_list.append(f)
+
+    image_file_list = deduped_image_file_list
+    print(f"after dedup files found in {args.image_dir}: len: {len(image_file_list)}")
+
+
+
     image_file_list = image_file_list[args.process_id::args.total_process_num]
+
     text_sys = TextSystem(args)
     is_visualize = False
     save_results_per_file = True
