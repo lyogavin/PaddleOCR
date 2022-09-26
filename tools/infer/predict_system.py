@@ -67,7 +67,7 @@ def get_image_file_list(img_file):
         imgs_lists.append(img_file)
     elif os.path.isdir(img_file):
         os_list_files = list(os.listdir(img_file))
-        for single_file in tqdm(os_list_files, total=len(os_list_files)):
+        for single_file in tqdm.tqdm(os_list_files, total=len(os_list_files)):
             file_path = os.path.join(img_file, single_file)
             if os.path.isfile(file_path) and _check_image_file(file_path):
                 imgs_lists.append(file_path)
