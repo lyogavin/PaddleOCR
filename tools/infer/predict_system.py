@@ -52,7 +52,6 @@ from tools.infer.utility import draw_ocr_box_txt, get_rotate_crop_image
 import datadog_sender
 
 
-
 def _check_image_file(path):
     img_end = {'jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif', 'tiff', 'gif', 'pdf', 'jpe'}
     return any([path.lower().endswith(e) for e in img_end])
@@ -66,11 +65,12 @@ def get_image_file_list(img_file):
     img_end = {'jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif', 'tiff', 'gif', 'pdf', 'jpe'}
     if os.path.isfile(img_file) and _check_image_file(img_file):
         imgs_lists.append(img_file)
-    #elif os.path.isdir(img_file):
-    #    for single_file in os.listdir(img_file):
-    #        file_path = os.path.join(img_file, single_file)
-    #        if os.path.isfile(file_path) and _check_image_file(file_path):
-    #            imgs_lists.append(file_path)
+    elif os.path.isdir(img_file):
+        os_list_files = list(os.listdir(img_file))
+        for single_file in tqdm(os_list_files, total=len(os_list_files)):
+            file_path = os.path.join(img_file, single_file)
+            if os.path.isfile(file_path) and _check_image_file(file_path):
+                imgs_lists.append(file_path)
     if len(imgs_lists) == 0:
         raise Exception("not found any img file in {}".format(img_file))
     imgs_lists = sorted(imgs_lists)
