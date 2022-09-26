@@ -148,8 +148,11 @@ def sorted_boxes(dt_boxes):
 def main(args):
     image_file_list = []
     for dir_entry in args.image_dir.split(","):
+        print(f"getting file list for {dir_entry}")
         image_file_list_entry = get_image_file_list(dir_entry)
         image_file_list.extend(image_file_list_entry)
+
+        print(f"len current file list: {len(image_file_list)}")
     file_name_set = set()
 
     print(f"files found in {args.image_dir}: len: {len(image_file_list)}")
