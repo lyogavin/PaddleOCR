@@ -37,8 +37,8 @@ from PIL import Image
 from ppocr.utils.logging import get_logger
 
 ts=int(time.time())
-print(f"logging to {ts}_log.log")
-logger = get_logger(log_file=f"logs/{ts}_log.log")
+print(f"logging to {ts}_{os.getpid()}_log.log")
+logger = get_logger(log_file=f"logs/{ts}_{os.getpid()}_log.log")
 
 
 import tools.infer.utility as utility
