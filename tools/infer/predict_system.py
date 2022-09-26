@@ -302,11 +302,14 @@ def main(args):
 
 
 if __name__ == "__main__":
+    import random
     args = utility.parse_args()
     if args.use_mp:
         p_list = []
         total_process_num = args.total_process_num
         for process_id in range(total_process_num):
+            time.sleep(random.randint(60, 120))
+            print(f"starting process: {process_id}")
             cmd = [sys.executable, "-u"] + sys.argv + [
                 "--process_id={}".format(process_id),
                 "--use_mp={}".format(False)
